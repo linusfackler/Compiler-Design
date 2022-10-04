@@ -15,14 +15,30 @@ default: run
 FILE=    Lexer.java      parser.java    sym.java \
     LexerTest.java
 
-run: basicTest.txt
+#run: basicTest.txt
+run: basicRegex.txt basicTerminals.txt basicFails.txt
 
 all: Lexer.java parser.java $(FILE:java=class)
 
-basicTest.txt: all
-		$(JAVA) -cp $(CP) LexerTest basicTest.txt > basicTest-output.txt
-		cat basicTest.txt
-		cat -n basicTest-output.txt
+# basicTest.txt: all
+# 		$(JAVA) -cp $(CP) LexerTest basicTest.txt > basicTest-output.txt
+# 		cat -n basicTest.txt
+# 		cat -n basicTest-output.txt
+
+basicRegex.txt: all
+		$(JAVA) -cp $(CP) LexerTest basicRegex.txt > basicRegex-output.txt
+		cat -n basicRegex.txt
+		cat -n basicRegex-output.txt
+
+basicTerminals.txt: all
+		$(JAVA) -cp $(CP) LexerTest basicTerminals.txt > basicTerminals-output.txt
+		cat -n basicTerminals.txt
+		cat -n basicTerminals-output.txt
+
+basicFails.txt: all
+		$(JAVA) -cp $(CP) LexerTest basicFails.txt > basicFails-output.txt
+		cat -n basicFails.txt
+		cat -n basicFails-output.txt
 
 clean:
 		rm -f *.class *~ *.bak Lexer.java parser.java sym.java

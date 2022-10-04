@@ -49,24 +49,65 @@ Symbol newSym(int tokenId, Object value) {
  * PATTERN DEFINITIONS:
  */
 
-
-/**
- * Implement patterns as regex here
- */
-
+id = [a-zA-Z][[a-zA-z]|[0-9]]*
+integer = -?[0-9]
+letter = [[[^\n]&&[^\t]]&&[[[^\r]&&[^\\]]&&[[^\"]&&[^']]]]|\\n|\\t|\\r|\\\\|\\\"|\\'
+character = \'{letter}\'
+floatpoint = -?[0-9]+\.[0-9]+
+stringliteral = \"{letter}*\"
 whitespace = [ \n\t\r]
-
+comment = \\\\.*|\\\*[^\*\\]*\*\\
 
 
 %%
 /**
  * LEXICAL RULES:
  */
-
-/**
- * Implement terminals here, ORDER MATTERS!
- */
- 
+{comment}       {return newSym(sym.COMMENT);}
+class           {return newSym(sym.CLASS, "class");}
+void            {return newSym(sym.VOID, "void");}
+int             {return newSym(sym.INT, "int");}
+float           {return newSym(sym.FLOAT, "float");}
+bool            {return newSym(sym.BOOL, "bool");}
+char            {return newSym(sym.CHAR, "char");}
+else            {return newSym(sym.ELSE, "else");}
+if              {return newSym(sym.IF, "if");}
+while           {return newSym(sym.WHILE, "while");}
+read            {return newSym(sym.READ, "read");}
+print           {return newSym(sym.PRINT, "print");}
+printline       {return newSym(sym.PRINT, "printline");}
+return          {return newSym(sym.RETURN, "return");}
+"("             {return newSym(sym.LPAREN, "(");}
+")"             {return newSym(sym.RPAREN, ")");}
+"["             {return newSym(sym.LBRACKET, "[");}
+"]"             {return newSym(sym.RBRACKET, "]");}
+"{"             {return newSym(sym.LBRACE, "{");}
+"}"             {return newSym(sym.RBRACE, "}");}
+";"             {return newSym(sym.SEMI, ";");}
+"&&"            {return newSym(sym.AND, "&&");}
+"||"            {return newSym(sym.OR, "||");}
+"*"             {return newSym(sym.ASTERIKS, "*");}
+"+"             {return newSym(sym.PLUS, "+");}
+"-"             {return newSym(sym.MINUS, "-");}
+"/"             {return newSym(sym.SLASH, "/");}
+"++"            {return newSym(sym.INCREMENT, "++");}
+"<"             {return newSym(sym.LTHAN, "<");}
+">"             {return newSym(sym.GTHAN, ">");}
+"<="            {return newSym(sym.LTHANEQ, "<=");}
+">="            {return newSym(sym.RTHANEQ, ">=");}
+"<>"            {return newSym(sym.NOTEQUAL, "<>");}
+"~"             {return newSym(sym.NOT, "~");}
+"?"             {return newSym(sym.QUESTION, "?");}
+":"             {return newSym(sym.COLON, ":");}
+"="             {return newSym(sym.EQUAL, "=");}
+","             {return newSym(sym.COMMA, ",");}
+true            {return newSym(sym.TRUE, "true");}
+false           {return newSym(sym.FALSE, "false");}
+{id}            {return newSym(sym.ID, yytext());}
+{integer}       {return newSym(sym.INTLIT, new Integer(yytext()));}
+{floatpoint}    {return newSym(sym.FLOATLIT, new Float(yytext()));}
+{character}     {return newSym(sym.CHARLIT, yytext());}
+{stringliteral} {return newSym(sym.STRINGLIT, yytext());}
 {whitespace}    { /* Ignore whitespace. */ }
 .               { System.out.println("Illegal char, '" + yytext() +
                     "' line: " + yyline + ", column: " + yychar); } 
