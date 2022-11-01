@@ -48,15 +48,30 @@ Symbol newSym(int tokenId, Object value) {
 /*-*
  * PATTERN DEFINITIONS:
  */
+tab             = \\t
+newline         = \\n
+slash           = \\
+apos            = {slash}'
+quote           = {slash}\"
 
-id = [a-zA-Z][[a-zA-z]|[0-9]]*
-integer = -?[0-9]
-letter = [[[^\n]&&[^\t]]&&[[[^\r]&&[^\\]]&&[[^\"]&&[^']]]]|\\n|\\t|\\r|\\\\|\\\"|\\'
-character = \'{letter}\'
-floatpoint = -?[0-9]+\.[0-9]+
-stringliteral = \"{letter}*\"
-whitespace = [ \n\t\r]
-comment = \\\\.*|\\\*[^\*\\]*\*\\
+letter          = [A-Za-z]
+digit           = [0-9]
+id              = {letter}[{letter}|{digit}]*
+intlit          = {digit}+
+floatlit        = {intlit}+\.{intlit}+
+
+charchar        = [[^\\]&&[^']]|{newline}|{tab}|{apos}|{slash}{slash}
+charlit         = '{charchar}'
+
+stringchar      = [[[^\\]&&[^\"]]&&[[^\n]&&[^\t]]]|{newline}|{tab}|{quote}|{slash}{slash}
+stringlit       = \"{stringchar}*\"
+
+blockcommentS   = {slash}\*
+blockcommentE   = \*{slash}
+blockcomment    = {blockcommentS}{commentbody}*?{blockcommentE}
+inlinecomment 	= {slash}{slash}.*(\n|\r|\r\n)
+whitespace      = [ \n\t\r]
+
 
 
 %%
@@ -65,6 +80,7 @@ comment = \\\\.*|\\\*[^\*\\]*\*\\
  */
 {comment}       {return newSym(sym.COMMENT);}
 class           {return newSym(sym.CLASS, "class");}
+final 		    {return newSym(sym.FINAL, "final");}
 void            {return newSym(sym.VOID, "void");}
 int             {return newSym(sym.INT, "int");}
 float           {return newSym(sym.FLOAT, "float");}
@@ -88,9 +104,13 @@ return          {return newSym(sym.RETURN, "return");}
 "||"            {return newSym(sym.OR, "||");}
 "*"             {return newSym(sym.ASTERIKS, "*");}
 "+"             {return newSym(sym.PLUS, "+");}
-"-"             {return newSym(sym.MINUS, "-");}
-"/"             {return newSym(sym.SLASH, "/");}
+"+" 		    {return newSym(sym.PREFIXPLUS, "+");}
 "++"            {return newSym(sym.INCREMENT, "++");}
+"-"             {return newSym(sym.MINUS, "-");}
+"-"		        {return newSym(sym.PREFIXMINUS, "-");}
+"--"		    {return newSym(sym.MINUSMINUS, "--");}
+"/"             {return newSym(sym.SLASH, "/");}
+"=="            {return newSym(sym.EQ, "==");}
 "<"             {return newSym(sym.LTHAN, "<");}
 ">"             {return newSym(sym.GTHAN, ">");}
 "<="            {return newSym(sym.LTHANEQ, "<=");}
@@ -104,10 +124,12 @@ return          {return newSym(sym.RETURN, "return");}
 true            {return newSym(sym.TRUE, "true");}
 false           {return newSym(sym.FALSE, "false");}
 {id}            {return newSym(sym.ID, yytext());}
-{integer}       {return newSym(sym.INTLIT, new Integer(yytext()));}
-{floatpoint}    {return newSym(sym.FLOATLIT, new Float(yytext()));}
-{character}     {return newSym(sym.CHARLIT, yytext());}
-{stringliteral} {return newSym(sym.STRINGLIT, yytext());}
+{intlit}        {return newSym(sym.INTLIT, new Integer(yytext()));}
+{floatlit}      {return newSym(sym.FLOATLIT, new Float(yytext()));}
+{charlit}       { return newSym(sym.CHARLIT, yytext()); }
+{stringlit}	    { return newSym(sym.STRINGLIT, yytext()); }
+{inlinecomment} { /* For this stand-alone lexer, print out comments. */}
+{blockcomment}	{ /* For this stand-alone lexer, print out comments. */}
 {whitespace}    { /* Ignore whitespace. */ }
 .               { System.out.println("Illegal char, '" + yytext() +
                     "' line: " + yyline + ", column: " + yychar); } 
