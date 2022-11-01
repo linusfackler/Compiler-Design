@@ -1,0 +1,3 @@
+class BinaryOperation extends Token {
+    
+}

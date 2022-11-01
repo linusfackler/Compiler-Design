@@ -1,0 +1,3 @@
+class AssignStatement extends Token {
+    
+}

@@ -1,0 +1,3 @@
+class Decrement extends Token {
+    
+}

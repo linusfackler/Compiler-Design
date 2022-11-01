@@ -1,0 +1,3 @@
+class Binaryop extends Token {
+    
+}

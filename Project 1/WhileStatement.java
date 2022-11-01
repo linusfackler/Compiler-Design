@@ -1,0 +1,3 @@
+class WhileStatement extends Token {
+    
+}

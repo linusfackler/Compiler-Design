@@ -1,0 +1,3 @@
+class ReadStatement extends Token {
+    
+}

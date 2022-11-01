@@ -1,6 +1,4 @@
-
 import java_cup.runtime.*;
-
 terminal CLASS;           //2
 terminal AND;             //3
 terminal ELSE;            //4
@@ -21,21 +19,21 @@ terminal PREFIXMINUS;     //18
 terminal DIVIDE;          //19
 terminal SEMI;            //20
 terminal LEFT_PAREN;      //21
-terminal RT_PAREN;        //22
+terminal RIGHT_PAREN;     //22
 terminal LEFT_BRACE;      //23
-terminal RT_BRACE;        //24
-terminal LEFT_BRKT;       //25
-terminal RT_BRKT;         //26
-terminal EQ;              //27
-terminal GTR;             //28
+terminal RIGHT_BRACE;     //24
+terminal LEFT_BRACKET;    //25
+terminal RIGHT_BRACKET;   //26
+terminal EQUAL;           //27
+terminal GREATER;         //28
 terminal LESS;            //29
 terminal LESS_EQ;         //30
-terminal GTR_EQ;          //31
+terminal GREATER_EQ;      //31
 terminal NOT_EQ;          //32
 terminal NOT;             //33
-terminal CONDITION;       //34
+terminal QUESTION;        //34
 terminal COLON;           //35
-terminal ASSMNT;          //36
+terminal ASSIGN;          //36
 terminal COMMA;           //37
 terminal FINAL;           //38
 terminal VOID;            //39
@@ -51,5 +49,184 @@ terminal double FLOATLIT; //48
 terminal String CHARLIT;  //49
 terminal String STRINGLIT;//50
 
-non terminal dummy;
-dummy ::= ;
+
+non terminal Program program;
+non terminal Stmts stmts;
+non terminal Stmt stmt;
+non terminal IFEnd ifend;
+non terminal Name name;
+non terminal Args args;
+non terminal Readlist readlist;
+non terminal Printlist printlist;
+non terminal Pintlinelist printlinelist;
+non terminal Expr expression;
+non terminal Binaryop binaryop;
+
+non terminal Type type;
+
+program ::= expression:e
+    {: RESULT = new Program(e); :}
+    ;
+
+stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE ifend:ie
+    {: RESULT = new IfStatement(e,ss,ie); :}
+    |
+    WHILE LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE
+    {: RESULT = new WhileStatement(e,ss); :}
+    |
+    name:n ASSIGN expression:e SEMI
+    {: RESULT = new AssignStatement(n,e); :}
+    |
+    READ LEFT_PAREN readlist:rl RIGHT_PAREN SEMI
+    {: RESULT = new ReadStatement(rl); :}
+    |
+    PRINT LEFT_PAREN printlist:pl RIGHT_PAREN SEMI
+    {: RESULT = new PrintStatement(pl); :}
+    |
+    PRINTLN LEFT_PAREN printlinelist:pll RIGHT_PAREN SEMI
+    {: RESULT = new PrintlnStatement(pll); :}
+    |
+    ID:i LEFT_PAREN RIGHT_PAREN SEMI
+    {: RESULT = new IDStatement(i); :}
+    |
+    ID:i LEFT_PAREN args:a RIGHT_PAREN SEMI
+    {: RESULT = new IDStatement(i,a); :}
+    |
+    RETURN SEMI
+    {: RESULT = new ReturnStatement(); :}
+    |
+    RETURN expression:e SEMI
+    {: RESULT = new ReturnStatement(e); :}
+    |
+    name:n PLUSPLUS SEMI
+    {: RESULT = new Increment(n); :}
+    |
+    name:n MINUSMINUS SEMI
+    {: RESULT = new Decrement(n); :}
+    ;
+
+ifend ::= ELSE LEFT_BRACE stmts:s RIGHT_BRACE
+    {: RESULT = new IfEnd(stmts); :}
+    |
+    {: RESULT = new IfEnd(); :}
+    ;
+
+name ::= ID:i
+    {: RESULT = new Name(i); :}
+    |
+    ID:i LEFT_BRACKET expression:e RIGHT_BRACKET
+    {: RESULT = new Name(i,e); :}
+    ;
+
+args ::= expression:e COMMA args:a
+    {: RESULT = a.prepend(e); :}
+    |
+    expression:e
+    {: RESULT = a.append(e); :}
+    ;
+
+readlist ::= name:n COMMA readlist:rl
+    {: RESULT = rl.prepend(n); :}
+    |
+    name:n
+    {: RESULT = rl.append(n); :}
+    ;
+
+printlist ::= expression:e COMMA printlist:pl
+    {: RESULT = pl.prepend(e); :}
+    |
+    expression:e
+    {: RESULT = pl.append(e); :}
+    ;
+
+printlinelist ::= printlist:pl
+    {: RESULT = new Printlinelist(pls); :}
+    |
+    {: RESULT = new Printlinelist(); :}
+    ;
+
+expression ::= name:n
+    {: RESULT = new Name(n); :}
+    |
+    ID:i LEFT_PAREN RIGHT_PAREN
+    {: RESULT = new IDExpression(i); :}
+    |
+    ID:i LEFT_PAREN args:a RIGHT_PAREN
+    {: RESULT = new IDExpression(i,a); :}
+    |
+    INTLIT:i
+    {: RESULT = new Expr(i); :}
+    |
+    CHARLIT:c
+    {: RESULT = new Expr(c); :}
+    |
+    STRINGLIT:s
+    {: RESULT = new Expr(s); :}
+    |
+    FLOATLIT:f
+    {: RESULT = new Expr(f); :}
+    |
+    TRUE:t
+    {: RESULT = new Expr(t); :}
+    |
+    FALSE:f
+    {: RESULT = new Expr(f); :}
+    |
+    LEFT_PAREN expression:e RIGHT_PAREN
+    {: RESULT = new Expr(e); :}
+    |
+    NOT expression:e
+    {: RESULT = new Expr(e); :}
+    |
+    PREFIXMINUS expression:e
+    {: RESULT = new Expr(e); :}
+    |
+    PREFIXPLUS expression:e
+    {: RESULT = new Expr(e); :}
+    |
+    LEFT_PAREN type:t RIGHT_PAREN expression:e
+    {: RESULT = new TypeExpr(e); :}
+    |
+    expression:e1 binaryop:b expression:e2
+    {: RESULT = new BinaryOperation(e1, b, e2); :}
+    |
+    LEFT_PAREN expression:e1 QUESTION expression:e2 COLON expression:e3
+    {: RESULT = new ConditionalExpression(e1, e2, e3); :}
+    ;
+
+binaryop ::= TIMES:t
+    {: RESULT = t; :}
+    |
+    DIVIDE:d
+    {: RESULT = d; :}
+    |
+    PLUS:p
+    {: RESULT = p; :}
+    |
+    MINUS:m
+    {: RESULT = m; :}
+    |
+    LESS:l
+    {: RESULT = l; :}
+    |
+    GREATER:g
+    {: RESULT = g; :}
+    |
+    LESS_EQ:le
+    {: RESULT = le; :}
+    |
+    GREATER_EQ:ge
+    {: RESULT = ge; :}
+    |
+    EQUAL:e
+    {: RESULT = e; :}
+    |
+    NOT_EQ:n
+    {: RESULT = n; :}
+    |
+    OR:o
+    {: RESULT = o; :}
+    |
+    AND:a
+    {: RESULT = a; :}
+    ;

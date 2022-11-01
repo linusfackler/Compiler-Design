@@ -1,0 +1,3 @@
+class Args extends Token {
+    
+}

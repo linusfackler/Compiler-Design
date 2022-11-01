@@ -68,6 +68,7 @@ stringlit       = \"{stringchar}*\"
 
 blockcommentS   = {slash}\*
 blockcommentE   = \*{slash}
+commentbody		= ([^\*]|(\*+[^\\]))
 blockcomment    = {blockcommentS}{commentbody}*?{blockcommentE}
 inlinecomment 	= {slash}{slash}.*(\n|\r|\r\n)
 whitespace      = [ \n\t\r]
@@ -78,7 +79,6 @@ whitespace      = [ \n\t\r]
 /**
  * LEXICAL RULES:
  */
-{comment}       {return newSym(sym.COMMENT);}
 class           {return newSym(sym.CLASS, "class");}
 final 		    {return newSym(sym.FINAL, "final");}
 void            {return newSym(sym.VOID, "void");}
@@ -93,43 +93,43 @@ read            {return newSym(sym.READ, "read");}
 print           {return newSym(sym.PRINT, "print");}
 printline       {return newSym(sym.PRINT, "printline");}
 return          {return newSym(sym.RETURN, "return");}
-"("             {return newSym(sym.LPAREN, "(");}
-")"             {return newSym(sym.RPAREN, ")");}
-"["             {return newSym(sym.LBRACKET, "[");}
-"]"             {return newSym(sym.RBRACKET, "]");}
-"{"             {return newSym(sym.LBRACE, "{");}
-"}"             {return newSym(sym.RBRACE, "}");}
+"("             {return newSym(sym.LEFT_PAREN, "(");}
+")"             {return newSym(sym.RIGHT_PAREN, ")");}
+"["             {return newSym(sym.LEFT_BRACKET, "[");}
+"]"             {return newSym(sym.RIGHT_BRACKET, "]");}
+"{"             {return newSym(sym.LEFT_BRACE, "{");}
+"}"             {return newSym(sym.RIGHT_BRACE, "}");}
 ";"             {return newSym(sym.SEMI, ";");}
 "&&"            {return newSym(sym.AND, "&&");}
 "||"            {return newSym(sym.OR, "||");}
-"*"             {return newSym(sym.ASTERIKS, "*");}
+"*"             {return newSym(sym.TIMES, "*");}
 "+"             {return newSym(sym.PLUS, "+");}
 "+" 		    {return newSym(sym.PREFIXPLUS, "+");}
-"++"            {return newSym(sym.INCREMENT, "++");}
+"++"            {return newSym(sym.PLUSPLUS, "++");}
 "-"             {return newSym(sym.MINUS, "-");}
 "-"		        {return newSym(sym.PREFIXMINUS, "-");}
 "--"		    {return newSym(sym.MINUSMINUS, "--");}
-"/"             {return newSym(sym.SLASH, "/");}
-"=="            {return newSym(sym.EQ, "==");}
-"<"             {return newSym(sym.LTHAN, "<");}
-">"             {return newSym(sym.GTHAN, ">");}
-"<="            {return newSym(sym.LTHANEQ, "<=");}
-">="            {return newSym(sym.RTHANEQ, ">=");}
-"<>"            {return newSym(sym.NOTEQUAL, "<>");}
+"/"             {return newSym(sym.DIVIDE, "/");}
+"=="            {return newSym(sym.EQUAL, "==");}
+"<"             {return newSym(sym.LESS, "<");}
+">"             {return newSym(sym.GREATER, ">");}
+"<="            {return newSym(sym.LESS_EQ, "<=");}
+">="            {return newSym(sym.GREATER_EQ, ">=");}
+"<>"            {return newSym(sym.NOT_EQ, "<>");}
 "~"             {return newSym(sym.NOT, "~");}
 "?"             {return newSym(sym.QUESTION, "?");}
 ":"             {return newSym(sym.COLON, ":");}
-"="             {return newSym(sym.EQUAL, "=");}
+"="             {return newSym(sym.ASSIGN, "=");}
 ","             {return newSym(sym.COMMA, ",");}
 true            {return newSym(sym.TRUE, "true");}
 false           {return newSym(sym.FALSE, "false");}
 {id}            {return newSym(sym.ID, yytext());}
 {intlit}        {return newSym(sym.INTLIT, new Integer(yytext()));}
 {floatlit}      {return newSym(sym.FLOATLIT, new Float(yytext()));}
-{charlit}       { return newSym(sym.CHARLIT, yytext()); }
-{stringlit}	    { return newSym(sym.STRINGLIT, yytext()); }
-{inlinecomment} { /* For this stand-alone lexer, print out comments. */}
-{blockcomment}	{ /* For this stand-alone lexer, print out comments. */}
-{whitespace}    { /* Ignore whitespace. */ }
+{charlit}       {return newSym(sym.CHARLIT, yytext());}
+{stringlit}	    {return newSym(sym.STRINGLIT, yytext());}
+{inlinecomment} {/* For this stand-alone lexer, print out comments. */}
+{blockcomment}	{/* For this stand-alone lexer, print out comments. */}
+{whitespace}    {/* Ignore whitespace. */}
 .               { System.out.println("Illegal char, '" + yytext() +
                     "' line: " + yyline + ", column: " + yychar); } 

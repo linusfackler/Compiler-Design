@@ -1,0 +1,3 @@
+class IfEnd extends Token {
+    
+}
