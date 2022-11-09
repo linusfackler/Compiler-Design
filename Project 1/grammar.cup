@@ -68,6 +68,9 @@ program ::= expression:e
     {: RESULT = new Program(e); :}
     ;
 
+stmts ::= stmt:s stmts:ss
+    {: RESULT = new}
+
 stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE ifend:ie
     {: RESULT = new IfStatement(e,ss,ie); :}
     |
