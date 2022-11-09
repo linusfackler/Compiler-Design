@@ -1,11 +1,11 @@
 class Program extends Token {
-    private Expr expr;
+    private Stmts statements;
 
-    public Program(Expr e) {
-        expr = e;
+    public Program(Stmts ss) {
+        statements = ss;
     }
 
     public String toString(int t) {
-        return "Program:\n" + expr.toString(t + 1) + "\n";
+        return "Program:\n" + statements.toString(t + 1) + "\n";
     }
 }

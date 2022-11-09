@@ -53,6 +53,7 @@ terminal String STRINGLIT;//50
 non terminal Program program;
 non terminal Stmts stmts;
 non terminal Stmt stmt;
+non terminal String optionalsemi;
 non terminal IFEnd ifend;
 non terminal Name name;
 non terminal Args args;
@@ -60,16 +61,21 @@ non terminal Readlist readlist;
 non terminal Printlist printlist;
 non terminal Pintlinelist printlinelist;
 non terminal Expr expression;
+non terminal TypeExpression typeExpression;
+non terminal UnaryExpression unaryExpression;
 non terminal Binaryop binaryop;
 
 non terminal Type type;
 
-program ::= expression:e
-    {: RESULT = new Program(e); :}
+program ::= stmts:ss
+    {: RESULT = new Program(ss); :}
     ;
 
 stmts ::= stmt:s stmts:ss
-    {: RESULT = new}
+    {: RESULT = ss.prepend(s); :}
+    |
+    {: RESULT = new Stmts(); :}
+    ;
 
 stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE ifend:ie
     {: RESULT = new IfStatement(e,ss,ie); :}
@@ -106,6 +112,15 @@ stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE 
     |
     name:n MINUSMINUS SEMI
     {: RESULT = new Decrement(n); :}
+    |
+    LEFT_BRACE stmts ss RIGHT_BRACE optionalsemi:os
+    {: RESULT = new BlockCode(ss, os); :}
+    ;
+
+optionalsemi ::= SEMI
+    {: RESULT = ";"; :}
+    |
+    {: RESULT = ""; :}
     ;
 
 ifend ::= ELSE LEFT_BRACE stmts:s RIGHT_BRACE
@@ -125,31 +140,31 @@ args ::= expression:e COMMA args:a
     {: RESULT = a.prepend(e); :}
     |
     expression:e
-    {: RESULT = a.append(e); :}
+    {: RESULT = new Args(e); :}
     ;
 
 readlist ::= name:n COMMA readlist:rl
     {: RESULT = rl.prepend(n); :}
     |
     name:n
-    {: RESULT = rl.append(n); :}
+    {: RESULT = ; new Readlist(n):}
     ;
 
 printlist ::= expression:e COMMA printlist:pl
     {: RESULT = pl.prepend(e); :}
     |
     expression:e
-    {: RESULT = pl.append(e); :}
+    {: RESULT = new PrintList(e); :}
     ;
 
 printlinelist ::= printlist:pl
-    {: RESULT = new Printlinelist(pls); :}
+    {: RESULT = new Printlinelist(pl); :}
     |
     {: RESULT = new Printlinelist(); :}
     ;
 
-expression ::= name:n
-    {: RESULT = new Name(n); :}
+expression ::= literalExpression:e
+    {: RESULT = e; :}
     |
     ID:i LEFT_PAREN RIGHT_PAREN
     {: RESULT = new IDExpression(i); :}
@@ -157,45 +172,55 @@ expression ::= name:n
     ID:i LEFT_PAREN args:a RIGHT_PAREN
     {: RESULT = new IDExpression(i,a); :}
     |
-    INTLIT:i
-    {: RESULT = new Expr(i); :}
-    |
-    CHARLIT:c
-    {: RESULT = new Expr(c); :}
-    |
-    STRINGLIT:s
-    {: RESULT = new Expr(s); :}
-    |
-    FLOATLIT:f
-    {: RESULT = new Expr(f); :}
-    |
-    TRUE:t
-    {: RESULT = new Expr(t); :}
-    |
-    FALSE:f
-    {: RESULT = new Expr(f); :}
-    |
     LEFT_PAREN expression:e RIGHT_PAREN
-    {: RESULT = new Expr(e); :}
-    |
-    NOT expression:e
-    {: RESULT = new Expr(e); :}
-    |
-    PREFIXMINUS expression:e
-    {: RESULT = new Expr(e); :}
-    |
-    PREFIXPLUS expression:e
-    {: RESULT = new Expr(e); :}
+    {: RESULT = e; :}
     |
     LEFT_PAREN type:t RIGHT_PAREN expression:e
-    {: RESULT = new TypeExpr(e); :}
+    {: RESULT = new Typecast(t, e); :}
     |
-    expression:e1 binaryop:b expression:e2
-    {: RESULT = new BinaryOperation(e1, b, e2); :}
+    unaryExpression:u
+    {: RESULT = u; :}
     |
+    binaryExpression:b
+    {: RESULT = b; :}
     LEFT_PAREN expression:e1 QUESTION expression:e2 COLON expression:e3
     {: RESULT = new ConditionalExpression(e1, e2, e3); :}
     ;
+
+typeExpression ::= name:n
+    {: RESULT = new TypeExpression(n); :}
+    |
+    INTLIT:i
+    {: RESULT = new TypeExpression(i); :}
+    |
+    CHARLIT:c
+    {: RESULT = new TypeExpression(c); :}
+    |
+    STRINGLIT:s
+    {: RESULT = new TypeExpression(s); :}
+    |
+    FLOATLIT:f
+    {: RESULT = new TypeExpression(f); :}
+    |
+    TRUE
+    {: RESULT = new TypeExpression(true); :}
+    |
+    FALSE
+    {: RESULT = new TypeExpression(false); :}
+    ;
+
+unaryExpression ::= NOT expression:e
+    {: RESULT = new UnaryExpression("~", e); :}
+    |
+    PREFIXMINUS expression:e
+    {: RESULT = new UnaryExpression("-", e); :}
+    |
+    PREFIXPLUS expression:e
+    {: RESULT = new UnaryExpression("+", e); :}
+    |
+
+binaryExpression ::= expression:e1 binaryop:b expression:e2
+    {: RESULT = new BinaryExpression(e1, b, e2); :}
 
 binaryop ::= TIMES:t
     {: RESULT = t; :}

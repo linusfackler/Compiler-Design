@@ -1,0 +1,3 @@
+class TypeExpression extends Token {
+    
+}
