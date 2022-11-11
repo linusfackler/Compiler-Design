@@ -1,3 +1,0 @@
-class Pintlinelist extends Token {
-    
-}

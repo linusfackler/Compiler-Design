@@ -1,3 +1,0 @@
-class IDStatement extends Token {
-    
-}

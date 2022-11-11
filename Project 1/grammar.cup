@@ -54,6 +54,7 @@ non terminal Program program;
 non terminal Stmts stmts;
 non terminal Stmt stmt;
 non terminal String optionalsemi;
+non terminal String type;
 non terminal IFEnd ifend;
 non terminal Name name;
 non terminal Args args;
@@ -64,8 +65,6 @@ non terminal Expr expression;
 non terminal TypeExpression typeExpression;
 non terminal UnaryExpression unaryExpression;
 non terminal Binaryop binaryop;
-
-non terminal Type type;
 
 program ::= stmts:ss
     {: RESULT = new Program(ss); :}
@@ -96,10 +95,10 @@ stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE 
     {: RESULT = new PrintlnStatement(pll); :}
     |
     ID:i LEFT_PAREN RIGHT_PAREN SEMI
-    {: RESULT = new IDStatement(i); :}
+    {: RESULT = new CalllStatement(i); :}
     |
     ID:i LEFT_PAREN args:a RIGHT_PAREN SEMI
-    {: RESULT = new IDStatement(i,a); :}
+    {: RESULT = new CalllStatement(i,a); :}
     |
     RETURN SEMI
     {: RESULT = new ReturnStatement(); :}
@@ -121,6 +120,19 @@ optionalsemi ::= SEMI
     {: RESULT = ";"; :}
     |
     {: RESULT = ""; :}
+    ;
+
+type ::= INT:i
+    {: RESULT = "int"; :}
+    |
+    CHAR:c
+    {: RESULT = "char"; :}
+    |
+    BOOL:b
+    {: RESULT = "bool"; :}
+    |
+    FLOAT:f
+    {: RESULT = "float"; :}
     ;
 
 ifend ::= ELSE LEFT_BRACE stmts:s RIGHT_BRACE
@@ -147,7 +159,7 @@ readlist ::= name:n COMMA readlist:rl
     {: RESULT = rl.prepend(n); :}
     |
     name:n
-    {: RESULT = ; new Readlist(n):}
+    {: RESULT = new Readlist(n):}
     ;
 
 printlist ::= expression:e COMMA printlist:pl
