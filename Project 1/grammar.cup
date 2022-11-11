@@ -175,8 +175,8 @@ printlinelist ::= printlist:pl
     {: RESULT = new Printlinelist(); :}
     ;
 
-expression ::= literalExpression:e
-    {: RESULT = e; :}
+expression ::= name:n
+    {: RESULT = n; :}
     |
     ID:i LEFT_PAREN RIGHT_PAREN
     {: RESULT = new IDExpression(i); :}
@@ -199,10 +199,7 @@ expression ::= literalExpression:e
     {: RESULT = new ConditionalExpression(e1, e2, e3); :}
     ;
 
-typeExpression ::= name:n
-    {: RESULT = new TypeExpression(n); :}
-    |
-    INTLIT:i
+typeExpression ::= INTLIT:i
     {: RESULT = new TypeExpression(i); :}
     |
     CHARLIT:c

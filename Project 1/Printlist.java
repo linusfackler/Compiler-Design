@@ -17,4 +17,11 @@ class Printlist extends Token {
         printlist.add(0, e);
         return this;
     }
+
+    public String toString(int t) {
+        String ret = "";
+        for (Expr e : printlist)
+            ret += e.toString(t);
+        return ret;
+    }
 }

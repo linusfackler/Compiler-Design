@@ -4,6 +4,10 @@ import java.util.List;
 class Args extends Token {
     private List<Expr> arguments;
 
+    public Args() {
+        arguments = new LinkedList<Expr>();
+    }
+
     public Args(Expr e) {
         arguments = new LinkedList<Expr>();
         arguments.add(e);
