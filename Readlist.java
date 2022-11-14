@@ -16,8 +16,9 @@ class Readlist extends Token {
 
     public String toString(int t) {
         String ret = "";
-        for (Name n : readlist)
-            ret += n.toString(t);
+        for (int i = 0; i < readlist.size() - 1; i++)
+            ret += readlist.get(i).toString(t) + ", ";
+        ret += readlist.get(readlist.size() - 1).toString(t);
         return ret;
     }
 }

@@ -15,6 +15,6 @@ class IDExpression extends Expr {
     public String toString(int t) {
         if (arguments == null)
             return getTabs(t) + id + "()";
-        return getTabs(t) + id + "( " + arguments.toString(0) + " )";
+        return getTabs(t) + id + "(" + arguments.toString(0) + ")";
     }
 }

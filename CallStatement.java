@@ -15,6 +15,6 @@ class CallStatement extends Stmt {
     public String toString(int t) {
         if (arguments == null)
             return getTabs(t) + callName + "();\n";
-        return getTabs(t) + callName + "( " + arguments.toString(0) + " );\n";
+        return getTabs(t) + callName + "(" + arguments.toString(0) + ");\n";
     }
 }

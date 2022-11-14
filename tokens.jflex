@@ -91,7 +91,7 @@ if              {return newSym(sym.IF, "if");}
 while           {return newSym(sym.WHILE, "while");}
 read            {return newSym(sym.READ, "read");}
 print           {return newSym(sym.PRINT, "print");}
-printline       {return newSym(sym.PRINT, "printline");}
+println         {return newSym(sym.PRINT, "println");}
 return          {return newSym(sym.RETURN, "return");}
 "("             {return newSym(sym.LEFT_PAREN, "(");}
 ")"             {return newSym(sym.RIGHT_PAREN, ")");}

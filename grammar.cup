@@ -67,6 +67,21 @@ non terminal TypeExpression typeExpression;
 non terminal UnaryExpression unaryExpression;
 non terminal String binaryop;
 
+non terminal Memberdecls memberdecls;
+non terminal Fielddecls fielddecls;
+non terminal Fielddecl  fielddecl;
+non terminal Methoddecls methoddecls;
+non terminal Methoddecl  methoddecl;
+non terminal OptionalFinal optionalfinal;
+non terminal Optionalexpr optionalexpr;
+non terminal String returntype;
+non terminal Argdecls argdecls;
+non terminal ArgdeclList argdeclList;
+non terminal Argdecl argdecl;
+
+non terminal FieldsMethod fieldsmethods;
+non terminal TypeID typeid;
+
 precedence left LEFT_PAREN, RIGHT_PAREN, LEFT_BRACKET, RIGHT_BRACKET;
 precedence right PREFIXPLUS, PREFIXMINUS, NOT, PLUSPLUS, MINUSMINUS;
 precedence left LEFT_PAREN, RIGHT_PAREN;
@@ -78,9 +93,192 @@ precedence left AND;
 precedence left OR;
 precedence right QUESTION, COLON;
 
-program ::= stmts:ss
-    {: RESULT = new Program(ss); :}
+program ::= CLASS ID:id LEFT_BRACE memberdecls:ms RIGHT_BRACE
+    {: RESULT = new Program(id, ms); :}
     ;
+
+// memberdecls ::= fielddecl:f memberdecls:mbs
+//     {: RESULT = mbs.prepend(f); :}
+//     |
+//     methoddecl:m methoddecls:ms
+//     {: RESULT = ms.prepend(m); :}
+//     |
+//     {: RESULT = new Memberdecls(); :}
+//     ;
+
+memberdecls ::= fielddecls:fs  methoddecls:ms
+    {: RESULT = new Memberdecls(fs, ms); :}
+    ;
+    // review ^^^^
+
+fielddecls ::= fielddecl:f fielddecls:fs
+    {: RESULT = fs.prepend(f); :}
+    |
+    {: RESULT = new Fielddecls(); :}
+    ;
+
+methoddecls ::= methoddecl:m methoddecls:ms
+    {: RESULT = ms.prepend(m); :}
+    |
+    {: RESULT = new Memberdecls(); :}
+    ;
+
+fielddecl ::= type:t ID:id optionalexpr:oe SEMI
+    {: RESULT = new Fielddecl("", t, id, oe); :}
+    |
+    FINAL type:t ID:id optionalexpr:oe SEMI
+    {: RESULT = new Fielddecl("final ", t, id, oe); :}
+    |
+    type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
+    {: RESULT = new Fielddecl(t, id, i); :}
+    ;
+
+// program ::= CLASS ID:id LEFT_BRACE memberdecls:ms RIGHT_BRACE
+//     {: RESULT = new Program(id, ms); :}
+//     ;
+
+// memberdecls ::= fieldsmethods:fm
+//     {: RESULT = new Memberdecls(fm); :}
+//     ;
+
+// fieldsmethods ::= fielddecl:f fieldsmethods:fm
+//     {: RESULT = new FieldsMethod(f, fm); :}
+//     |
+//     methoddecl:m methoddecls:ms
+//     {: RESULT = new FieldsMethod(m, ms); :}
+//     |
+//     {: RESULT = null; :}
+//     ;
+
+// fieldsmethods ::= fielddecl:f fieldsmethods:fm
+//     {: RESULT = fm.prepend(f); :}
+//     |
+//     methoddecl:m methoddecls:ms
+//     {: RESULT = new FieldsMethod(m, ms); :}
+//     |
+//     {: RESULT = new FieldsMethod(); :}
+//     ;
+
+// fielddecls ::= fielddecl:f fielddecls:fs
+//     {: RESULT = new Fielddecls(f, fs); :}
+//     |
+//     {: RESULT = null; :}
+//     ;
+
+// fielddecls ::= fielddecl:f fielddecls:fs
+//     {: RESULT = fs.prepend(f); :}
+//     |
+//     {: RESULT = new Fielddecls(); :}
+//     ;
+
+// methoddecls ::= methoddecl:m methoddecls:ms
+//     {: RESULT = new Methoddecls(m, ms); :}
+//     |
+//     {: RESULT = null; :}
+//     ;
+
+// methoddecls ::= methoddecl:m methoddecls:ms
+//     {: RESULT = ms.prepend(m); :}
+//     |
+//     {: RESULT = new Methoddecls(); :}
+//     ;
+
+// fielddecl ::= FINAL type:t ID:id optionalexpr:oe SEMI
+//     {: RESULT = new Fielddecl("final", t, id, oe); :}
+//     |
+//     type:t ID:id optionalexpr:oe SEMI
+//     {: RESULT = new Fielddecl("", t, id, oe); :}
+//     |
+//     type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
+//     {: RESULT = new Fielddecl(t, id, i); :}
+//     ;
+
+// typeid ::= type:t ID:id
+//     {: RESULT = new TypeID(t, id); :}
+//     ;
+
+// optionalfinal ::= FINAL
+//     {: RESULT = new OptionalFinal("final"); :}
+//     |
+//     {: RESULT = new OptionalFinal(); :}
+//     ;
+
+// memberdecls ::= fielddecls:fs  methoddecls:ms
+//     {: RESULT = new Memberdecls(fs, ms); :}
+//     ;
+//     // review ^^^^
+
+// fielddecls ::= fielddecl:f fielddecls:fs
+//     {: RESULT = fs.prepend(f); :}
+//     |
+//     {: RESULT = new Fielddecls(); :}
+//     ;
+
+// methoddecls ::= methoddecl:m methoddecls:ms
+//     {: RESULT = ms.prepend(m); :}
+//     |
+//     {: RESULT = new Methoddecls(); :}
+//     ;
+
+// fielddecl ::= FINAL type:t ID:id optionalexpr:oe SEMI
+//     {: RESULT = new Fielddecl("final", t, id, oe); :}
+//     |
+//     type:t ID:id optionalexpr:oe SEMI
+//     {: RESULT = new Fielddecl("", t, id, oe); :}
+//     |
+//     type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
+//     {: RESULT = new Fielddecl(t, id, i); :}
+//     ;
+
+// optionalfinal ::= FINAL
+//     {: RESULT = "final "; :}
+//     |
+//     {: RESULT = ""; :}
+//     ;
+
+optionalexpr ::= ASSIGN expression:e
+    {: RESULT = new Optionalexpr(e); :}
+    |
+    {: RESULT = new Optionalexpr(); :}
+    ;
+
+methoddecl ::= type:t ID:id LEFT_PAREN argdecls:as RIGHT_PAREN LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE optionalsemi:os
+    {: RESULT = new Methoddecl(t, id, as, fs, ss, os); :}
+    |
+    VOID ID:id LEFT_PAREN argdecls:as RIGHT_PAREN LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE optionalsemi:os
+    {: RESULT = new Methoddecl("void", id, as, fs, ss, os); :}
+    ;
+
+// returntype ::= type:t
+//     {: RESULT = t; :}
+//     |
+//     VOID
+//     {: RESULT = "void"; :}
+//     ;
+
+argdecls ::= argdeclList:al
+    {: RESULT = new Argdecls(al); :}
+    |
+    {: RESULT = new Argdecls(); :}
+    ;
+
+argdeclList ::= argdecl:a COMMA argdeclList:al
+    {: RESULT = al.prepend(a); :}
+    |
+    argdecl:a
+    {: RESULT = new ArgdeclList(a); :}
+    ;
+
+argdecl ::= type:t ID:id
+    {: RESULT = new Argdecl(t, id); :}
+    |
+    type:t ID:id LEFT_BRACKET RIGHT_BRACKET
+    {: RESULT = new Argdecl(t, id, "[]"); :}
+    ;
+
+// program ::= stmts:ss
+//     {: RESULT = new Program(ss); :}
+//     ;
 
 stmts ::= stmt:s stmts:st
     {: RESULT = st.prepend(s); :}
@@ -88,14 +286,14 @@ stmts ::= stmt:s stmts:st
     {: RESULT = new Stmts(); :}
     ;
 
-stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE ifend:ie
-    {: RESULT = new IfStatement(e,ss,ie); :}
+stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE ifend:ie
+    {: RESULT = new IfStatement(e, fs, ss, ie); :}   
     |
-    WHILE LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE
-    {: RESULT = new WhileStatement(e,ss); :}
+    WHILE LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE
+    {: RESULT = new WhileStatement(e, fs, ss); :}
     |
     name:n ASSIGN expression:e SEMI
-    {: RESULT = new AssignStatement(n,e); :}
+    {: RESULT = new AssignStatement(n, e); :}
     |
     READ LEFT_PAREN readlist:rl RIGHT_PAREN SEMI
     {: RESULT = new ReadStatement(rl); :}
@@ -124,8 +322,8 @@ stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE 
     name:n MINUSMINUS SEMI
     {: RESULT = new Decrement(n); :}
     |
-    LEFT_BRACE stmts:ss RIGHT_BRACE optionalsemi:os
-    {: RESULT = new BlockCode(ss, os); :}
+    LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE optionalsemi:os
+    {: RESULT = new BlockCode(fs, ss, os); :}
     ;
 
 optionalsemi ::= SEMI
@@ -134,21 +332,21 @@ optionalsemi ::= SEMI
     {: RESULT = ""; :}
     ;
 
-type ::= INT:i
+type ::= INT
     {: RESULT = "int"; :}
     |
-    CHAR:c
+    CHAR
     {: RESULT = "char"; :}
     |
-    BOOL:b
+    BOOL
     {: RESULT = "bool"; :}
     |
-    FLOAT:f
+    FLOAT
     {: RESULT = "float"; :}
     ;
 
-ifend ::= ELSE LEFT_BRACE stmts:s RIGHT_BRACE
-    {: RESULT = new IfEnd(s); :}
+ifend ::= ELSE LEFT_BRACE fielddecls:fs stmts:ss RIGHT_BRACE
+    {: RESULT = new IfEnd(fs, ss); :}
     |
     {: RESULT = new IfEnd(); :}
     ;

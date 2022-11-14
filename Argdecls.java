@@ -1,16 +1,16 @@
 import java.util.LinkedList;
 import java.util.List;
 
-class Printlinelist extends Token {
-    private List<Printlist> list;
+class Argdecls extends Token {
+    private List<ArgdeclList> list;
 
-    public Printlinelist() {
-        list = new LinkedList<Printlist>();
+    public Argdecls() {
+        list = new LinkedList<ArgdeclList>();
     }
 
-    public Printlinelist(Printlist pl) {
-        list = new LinkedList<Printlist>();
-        list.add(pl);
+    public Argdecls(ArgdeclList al) {
+        list = new LinkedList<ArgdeclList>();
+        list.add(al);
     }
 
     public String toString(int t) {

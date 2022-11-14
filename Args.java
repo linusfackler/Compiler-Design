@@ -20,8 +20,9 @@ class Args extends Token {
 
     public String toString(int t) {
         String ret = "";
-        for (Expr e : arguments)
-            ret += e.toString(t);
+        for (int i = 0; i < arguments.size() - 1; i++)
+            ret += arguments.get(i).toString(t) + ", ";
+        ret += arguments.get(arguments.size() - 1).toString(t);
         return ret;
     }
 }

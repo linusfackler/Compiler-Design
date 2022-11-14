@@ -6,6 +6,6 @@ class ReadStatement extends Stmt {
     }
 
     public String toString(int t) {
-        return getTabs(t) + "read ( " + readlist.toString(0) + " );\n";
+        return getTabs(t) + "read(" + readlist.toString(0) + ");\n";
     }
 }

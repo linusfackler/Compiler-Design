@@ -1,20 +1,20 @@
 import java.util.LinkedList;
 import java.util.List;
 
-class Printlist extends Token {
-    private List<Expr> list;
+class ArgdeclList extends Token {
+    private List<Argdecl> list;
 
-    public Printlist() {
-        list = new LinkedList<Expr>();
+    public ArgdeclList() {
+        list = new LinkedList<Argdecl>();
     }
 
-    public Printlist(Expr e) {
-        list = new LinkedList<Expr>();
-        list.add(e);
+    public ArgdeclList(Argdecl a) {
+        list = new LinkedList<Argdecl>();
+        list.add(a);
     }
 
-    public Printlist prepend(Expr e) {
-        list.add(0, e);
+    public ArgdeclList prepend(Argdecl a) {
+        list.add(0, a);
         return this;
     }
 
