@@ -1,4 +1,4 @@
-class ConditionalExpression extends Token {
+class ConditionalExpression extends Expr {
     private Expr condition, exprTrue, exprFalse;
 
     public ConditionalExpression(Expr e1, Expr e2, Expr e3) {

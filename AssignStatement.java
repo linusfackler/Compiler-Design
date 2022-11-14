@@ -1,4 +1,4 @@
-class AssignStatement extends Token {
+class AssignStatement extends Stmt {
     public Name variableName;
     public Expr value;
 

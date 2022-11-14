@@ -1,4 +1,4 @@
-class BlockCode extends Token {
+class BlockCode extends Stmt {
     private Stmts statementlist;
     private String semi;
 

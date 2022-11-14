@@ -1,4 +1,4 @@
-class ExpressionParen extends Token {
+class ExpressionParen extends Expr {
     Expr expression;
 
     public ExpressionParen(Expr e) {

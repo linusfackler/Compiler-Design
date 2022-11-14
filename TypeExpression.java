@@ -1,6 +1,4 @@
-import java.lang.ProcessBuilder.Redirect.Type;
-
-class TypeExpression extends Token {
+class TypeExpression extends Expr {
     private int valueI;
     private boolean issetI = false;
 
@@ -55,7 +53,9 @@ class TypeExpression extends Token {
             return getTabs(t) + valueS;
         else if (issetF == true)
             return getTabs(t) + valueF;
-        else
+        else if (issetB == true)
             return getTabs(t) + valueB;
+        else
+            return "";
     }
 }

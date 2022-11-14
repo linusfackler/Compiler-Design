@@ -1,4 +1,4 @@
-class Name extends Token {
+class Name extends Expr {
     // private Name name;
     private String id;
     private Expr expression;

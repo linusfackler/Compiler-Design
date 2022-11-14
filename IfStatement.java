@@ -1,4 +1,4 @@
-class IfStatement extends Token {
+class IfStatement extends Stmt {
     private Expr check;
     private Stmts statementList;
     private IfEnd elseBlock;

@@ -1,4 +1,4 @@
-class IDExpression extends Token {
+class IDExpression extends Expr {
     private String id;
     private Args arguments;
 

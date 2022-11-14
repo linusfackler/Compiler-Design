@@ -1,4 +1,4 @@
-class ReadStatement extends Token {
+class ReadStatement extends Stmt {
     public Readlist readlist;
 
     public ReadStatement (Readlist rl) {

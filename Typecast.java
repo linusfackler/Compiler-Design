@@ -1,4 +1,4 @@
-class Typecast extends Token {
+class Typecast extends Expr {
     private String type;
     private Expr expr;
 

@@ -1,4 +1,4 @@
-class ReturnStatement extends Token {
+class ReturnStatement extends Stmt {
     private Expr expression;
 
     public ReturnStatement() {

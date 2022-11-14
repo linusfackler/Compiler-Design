@@ -44,8 +44,8 @@ terminal String FLOAT;    //43
 terminal String BOOL;     //44
 terminal String CHAR;     //45
 terminal String ID;       //46
-terminal int INTLIT;      //47
-terminal double FLOATLIT; //48
+terminal Integer INTLIT;  //47
+terminal Float FLOATLIT;  //48
 terminal String CHARLIT;  //49
 terminal String STRINGLIT;//50
 
@@ -55,23 +55,35 @@ non terminal Stmts stmts;
 non terminal Stmt stmt;
 non terminal String optionalsemi;
 non terminal String type;
-non terminal IFEnd ifend;
+non terminal IfEnd ifend;
 non terminal Name name;
 non terminal Args args;
 non terminal Readlist readlist;
 non terminal Printlist printlist;
-non terminal Pintlinelist printlinelist;
+non terminal Printlinelist printlinelist;
 non terminal Expr expression;
+non terminal BinaryExpression binaryExpression;
 non terminal TypeExpression typeExpression;
 non terminal UnaryExpression unaryExpression;
 non terminal String binaryop;
+
+precedence left LEFT_PAREN, RIGHT_PAREN, LEFT_BRACKET, RIGHT_BRACKET;
+precedence right PREFIXPLUS, PREFIXMINUS, NOT, PLUSPLUS, MINUSMINUS;
+precedence left LEFT_PAREN, RIGHT_PAREN;
+precedence left TIMES, DIVIDE;
+precedence left PLUS, MINUS;
+precedence left LESS, GREATER, LESS_EQ, GREATER_EQ;
+precedence left NOT_EQ, EQUAL;
+precedence left AND;
+precedence left OR;
+precedence right QUESTION, COLON;
 
 program ::= stmts:ss
     {: RESULT = new Program(ss); :}
     ;
 
-stmts ::= stmt:s stmts:ss
-    {: RESULT = ss.prepend(s); :}
+stmts ::= stmt:s stmts:st
+    {: RESULT = st.prepend(s); :}
     |
     {: RESULT = new Stmts(); :}
     ;
@@ -95,10 +107,10 @@ stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE 
     {: RESULT = new PrintlnStatement(pll); :}
     |
     ID:i LEFT_PAREN RIGHT_PAREN SEMI
-    {: RESULT = new CalllStatement(i); :}
+    {: RESULT = new CallStatement(i); :}
     |
     ID:i LEFT_PAREN args:a RIGHT_PAREN SEMI
-    {: RESULT = new CalllStatement(i,a); :}
+    {: RESULT = new CallStatement(i,a); :}
     |
     RETURN SEMI
     {: RESULT = new ReturnStatement(); :}
@@ -112,7 +124,7 @@ stmt ::= IF LEFT_PAREN expression:e RIGHT_PAREN LEFT_BRACE stmts:ss RIGHT_BRACE 
     name:n MINUSMINUS SEMI
     {: RESULT = new Decrement(n); :}
     |
-    LEFT_BRACE stmts ss RIGHT_BRACE optionalsemi:os
+    LEFT_BRACE stmts:ss RIGHT_BRACE optionalsemi:os
     {: RESULT = new BlockCode(ss, os); :}
     ;
 
@@ -136,7 +148,7 @@ type ::= INT:i
     ;
 
 ifend ::= ELSE LEFT_BRACE stmts:s RIGHT_BRACE
-    {: RESULT = new IfEnd(stmts); :}
+    {: RESULT = new IfEnd(s); :}
     |
     {: RESULT = new IfEnd(); :}
     ;
@@ -159,14 +171,14 @@ readlist ::= name:n COMMA readlist:rl
     {: RESULT = rl.prepend(n); :}
     |
     name:n
-    {: RESULT = new Readlist(n):}
+    {: RESULT = new Readlist(n);:}
     ;
 
 printlist ::= expression:e COMMA printlist:pl
     {: RESULT = pl.prepend(e); :}
     |
     expression:e
-    {: RESULT = new PrintList(e); :}
+    {: RESULT = new Printlist(e); :}
     ;
 
 printlinelist ::= printlist:pl
@@ -199,19 +211,18 @@ expression ::= name:n
     binaryExpression:b
     {: RESULT = b; :}
     |
-    LEFT_PAREN expression:e1 QUESTION expression:e2 COLON expression:e3
+    LEFT_PAREN expression:e1 QUESTION expression:e2 COLON expression:e3 RIGHT_PAREN
     {: RESULT = new ConditionalExpression(e1, e2, e3); :}
     ;
 
 unaryExpression ::= NOT expression:e
     {: RESULT = new UnaryExpression("~", e); :}
     |
-    PREFIXMINUS expression:e
-    {: RESULT = new UnaryExpression("-", e); :}
+    MINUS expression:e
+    {: RESULT = new UnaryExpression("-", e); :} %prec PREFIXMINUS
     |
-    PREFIXPLUS expression:e
-    {: RESULT = new UnaryExpression("+", e); :}
-    |
+    PLUS expression:e
+    {: RESULT = new UnaryExpression("+", e); :} %prec PREFIXPLUS
     ;
 
 typeExpression ::= INTLIT:i

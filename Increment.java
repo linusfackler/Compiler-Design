@@ -1,4 +1,4 @@
-class Increment extends Token {
+class Increment extends Stmt {
     public Name variableName;
 
     public Increment (Name n) {

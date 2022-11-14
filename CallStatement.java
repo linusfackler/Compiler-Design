@@ -1,4 +1,4 @@
-class CallStatement extends Token {
+class CallStatement extends Stmt {
     private String callName;
     private Args arguments;
 

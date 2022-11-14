@@ -1,4 +1,4 @@
-class PrintStatement extends Token {
+class PrintStatement extends Stmt {
     public Printlist printlist;
 
     public PrintStatement (Printlist pl) {

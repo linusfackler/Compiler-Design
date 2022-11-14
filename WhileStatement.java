@@ -1,4 +1,4 @@
-class WhileStatement extends Token {
+class WhileStatement extends Stmt {
     private Expr check;
     private Stmts statementList;
 

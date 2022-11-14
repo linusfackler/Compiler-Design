@@ -1,4 +1,4 @@
-class BinaryExpression extends Token {
+class BinaryExpression extends Expr {
     private Expr e1, e2;
     private String binary;
 
