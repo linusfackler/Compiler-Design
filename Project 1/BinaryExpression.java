@@ -1,3 +1,0 @@
-class BinaryExpression extends Token {
-    
-}

@@ -1,3 +1,0 @@
-class ConditionalExpression extends Token {
-    
-}

@@ -64,7 +64,7 @@ non terminal Pintlinelist printlinelist;
 non terminal Expr expression;
 non terminal TypeExpression typeExpression;
 non terminal UnaryExpression unaryExpression;
-non terminal Binaryop binaryop;
+non terminal String binaryop;
 
 program ::= stmts:ss
     {: RESULT = new Program(ss); :}
@@ -184,19 +184,34 @@ expression ::= name:n
     ID:i LEFT_PAREN args:a RIGHT_PAREN
     {: RESULT = new IDExpression(i,a); :}
     |
-    LEFT_PAREN expression:e RIGHT_PAREN
-    {: RESULT = e; :}
+    typeExpression:t
+    {: RESULT = t; :}
     |
-    LEFT_PAREN type:t RIGHT_PAREN expression:e
-    {: RESULT = new Typecast(t, e); :}
+    LEFT_PAREN expression:e RIGHT_PAREN
+    {: RESULT = new ExpressionParen(e); :}
     |
     unaryExpression:u
     {: RESULT = u; :}
     |
+    LEFT_PAREN type:t RIGHT_PAREN expression:e
+    {: RESULT = new Typecast(t, e); :}
+    |
     binaryExpression:b
     {: RESULT = b; :}
+    |
     LEFT_PAREN expression:e1 QUESTION expression:e2 COLON expression:e3
     {: RESULT = new ConditionalExpression(e1, e2, e3); :}
+    ;
+
+unaryExpression ::= NOT expression:e
+    {: RESULT = new UnaryExpression("~", e); :}
+    |
+    PREFIXMINUS expression:e
+    {: RESULT = new UnaryExpression("-", e); :}
+    |
+    PREFIXPLUS expression:e
+    {: RESULT = new UnaryExpression("+", e); :}
+    |
     ;
 
 typeExpression ::= INTLIT:i
@@ -218,52 +233,43 @@ typeExpression ::= INTLIT:i
     {: RESULT = new TypeExpression(false); :}
     ;
 
-unaryExpression ::= NOT expression:e
-    {: RESULT = new UnaryExpression("~", e); :}
-    |
-    PREFIXMINUS expression:e
-    {: RESULT = new UnaryExpression("-", e); :}
-    |
-    PREFIXPLUS expression:e
-    {: RESULT = new UnaryExpression("+", e); :}
-    |
-
 binaryExpression ::= expression:e1 binaryop:b expression:e2
     {: RESULT = new BinaryExpression(e1, b, e2); :}
+    ;
 
 binaryop ::= TIMES:t
-    {: RESULT = t; :}
+    {: RESULT = "*"; :}
     |
     DIVIDE:d
-    {: RESULT = d; :}
+    {: RESULT = "/"; :}
     |
     PLUS:p
-    {: RESULT = p; :}
+    {: RESULT = "+"; :}
     |
     MINUS:m
-    {: RESULT = m; :}
+    {: RESULT = "-"; :}
     |
     LESS:l
-    {: RESULT = l; :}
+    {: RESULT = "<"; :}
     |
     GREATER:g
-    {: RESULT = g; :}
+    {: RESULT = ">"; :}
     |
     LESS_EQ:le
-    {: RESULT = le; :}
+    {: RESULT = "<="; :}
     |
     GREATER_EQ:ge
-    {: RESULT = ge; :}
+    {: RESULT = ">="; :}
     |
     EQUAL:e
-    {: RESULT = e; :}
+    {: RESULT = "=="; :}
     |
     NOT_EQ:n
-    {: RESULT = n; :}
+    {: RESULT = "<>"; :}
     |
     OR:o
-    {: RESULT = o; :}
+    {: RESULT = "||"; :}
     |
     AND:a
-    {: RESULT = a; :}
+    {: RESULT = "&&"; :}
     ;

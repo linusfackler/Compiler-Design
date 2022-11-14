@@ -1,3 +1,0 @@
-class Typecast extends Token {
-    
-}
