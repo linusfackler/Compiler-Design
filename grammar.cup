@@ -54,7 +54,7 @@ non terminal Program program;
 non terminal Stmts stmts;
 non terminal Stmt stmt;
 non terminal String optionalsemi;
-non terminal String type;
+non terminal Type type;
 non terminal IfEnd ifend;
 non terminal Name name;
 non terminal Args args;
@@ -97,144 +97,48 @@ program ::= CLASS ID:id LEFT_BRACE memberdecls:ms RIGHT_BRACE
     {: RESULT = new Program(id, ms); :}
     ;
 
-// memberdecls ::= fielddecl:f memberdecls:mbs
-//     {: RESULT = mbs.prepend(f); :}
-//     |
-//     methoddecl:m methoddecls:ms
-//     {: RESULT = ms.prepend(m); :}
-//     |
-//     {: RESULT = new Memberdecls(); :}
-//     ;
-
-memberdecls ::= fielddecls:fs  methoddecls:ms
-    {: RESULT = new Memberdecls(fs, ms); :}
+memberdecls ::= fieldsmethods:fm
+    {: RESULT = new Memberdecls(fm); :}
     ;
-    // review ^^^^
+
+fieldsmethods ::= fielddecl:f fieldsmethods:fm
+    {: RESULT = new FieldsMethod(f, fm); :}
+    |
+    methoddecl:m methoddecls:ms
+    {: RESULT = new FieldsMethod(m, ms); :}
+    |
+    {: RESULT = null; :}
+    ;
 
 fielddecls ::= fielddecl:f fielddecls:fs
-    {: RESULT = fs.prepend(f); :}
+    {: RESULT = new Fielddecls(f, fs); :}
     |
-    {: RESULT = new Fielddecls(); :}
+    {: RESULT = null; :}
     ;
 
 methoddecls ::= methoddecl:m methoddecls:ms
-    {: RESULT = ms.prepend(m); :}
+    {: RESULT = new Methoddecls(m, ms); :}
     |
-    {: RESULT = new Memberdecls(); :}
+    {: RESULT = null; :}
     ;
 
-fielddecl ::= type:t ID:id optionalexpr:oe SEMI
-    {: RESULT = new Fielddecl("", t, id, oe); :}
+fielddecl ::= optionalfinal:f typeid:t optionalexpr:oe SEMI
+    {: RESULT = new FielddeclSingle(f, t, oe); :}
     |
-    FINAL type:t ID:id optionalexpr:oe SEMI
-    {: RESULT = new Fielddecl("final ", t, id, oe); :}
+    typeid:t optionalexpr:oe SEMI
+    {: RESULT = new FielddeclSingle(t, oe); :}
     |
-    type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
-    {: RESULT = new Fielddecl(t, id, i); :}
+    typeid:t LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
+    {: RESULT = new FielddeclArray(t, i); :}
     ;
 
-// program ::= CLASS ID:id LEFT_BRACE memberdecls:ms RIGHT_BRACE
-//     {: RESULT = new Program(id, ms); :}
-//     ;
+typeid ::= type:t ID:id
+    {: RESULT = new TypeID(t, id); :}
+    ;
 
-// memberdecls ::= fieldsmethods:fm
-//     {: RESULT = new Memberdecls(fm); :}
-//     ;
-
-// fieldsmethods ::= fielddecl:f fieldsmethods:fm
-//     {: RESULT = new FieldsMethod(f, fm); :}
-//     |
-//     methoddecl:m methoddecls:ms
-//     {: RESULT = new FieldsMethod(m, ms); :}
-//     |
-//     {: RESULT = null; :}
-//     ;
-
-// fieldsmethods ::= fielddecl:f fieldsmethods:fm
-//     {: RESULT = fm.prepend(f); :}
-//     |
-//     methoddecl:m methoddecls:ms
-//     {: RESULT = new FieldsMethod(m, ms); :}
-//     |
-//     {: RESULT = new FieldsMethod(); :}
-//     ;
-
-// fielddecls ::= fielddecl:f fielddecls:fs
-//     {: RESULT = new Fielddecls(f, fs); :}
-//     |
-//     {: RESULT = null; :}
-//     ;
-
-// fielddecls ::= fielddecl:f fielddecls:fs
-//     {: RESULT = fs.prepend(f); :}
-//     |
-//     {: RESULT = new Fielddecls(); :}
-//     ;
-
-// methoddecls ::= methoddecl:m methoddecls:ms
-//     {: RESULT = new Methoddecls(m, ms); :}
-//     |
-//     {: RESULT = null; :}
-//     ;
-
-// methoddecls ::= methoddecl:m methoddecls:ms
-//     {: RESULT = ms.prepend(m); :}
-//     |
-//     {: RESULT = new Methoddecls(); :}
-//     ;
-
-// fielddecl ::= FINAL type:t ID:id optionalexpr:oe SEMI
-//     {: RESULT = new Fielddecl("final", t, id, oe); :}
-//     |
-//     type:t ID:id optionalexpr:oe SEMI
-//     {: RESULT = new Fielddecl("", t, id, oe); :}
-//     |
-//     type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
-//     {: RESULT = new Fielddecl(t, id, i); :}
-//     ;
-
-// typeid ::= type:t ID:id
-//     {: RESULT = new TypeID(t, id); :}
-//     ;
-
-// optionalfinal ::= FINAL
-//     {: RESULT = new OptionalFinal("final"); :}
-//     |
-//     {: RESULT = new OptionalFinal(); :}
-//     ;
-
-// memberdecls ::= fielddecls:fs  methoddecls:ms
-//     {: RESULT = new Memberdecls(fs, ms); :}
-//     ;
-//     // review ^^^^
-
-// fielddecls ::= fielddecl:f fielddecls:fs
-//     {: RESULT = fs.prepend(f); :}
-//     |
-//     {: RESULT = new Fielddecls(); :}
-//     ;
-
-// methoddecls ::= methoddecl:m methoddecls:ms
-//     {: RESULT = ms.prepend(m); :}
-//     |
-//     {: RESULT = new Methoddecls(); :}
-//     ;
-
-// fielddecl ::= FINAL type:t ID:id optionalexpr:oe SEMI
-//     {: RESULT = new Fielddecl("final", t, id, oe); :}
-//     |
-//     type:t ID:id optionalexpr:oe SEMI
-//     {: RESULT = new Fielddecl("", t, id, oe); :}
-//     |
-//     type:t ID:id LEFT_BRACKET INTLIT:i RIGHT_BRACKET SEMI
-//     {: RESULT = new Fielddecl(t, id, i); :}
-//     ;
-
-// optionalfinal ::= FINAL
-//     {: RESULT = "final "; :}
-//     |
-//     {: RESULT = ""; :}
-//     ;
+optionalfinal ::= FINAL
+    {: RESULT = new OptionalFinal(); :}
+    ;
 
 optionalexpr ::= ASSIGN expression:e
     {: RESULT = new Optionalexpr(e); :}

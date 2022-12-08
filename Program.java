@@ -8,6 +8,6 @@ class Program extends Token {
     }
 
     public String toString(int t) {
-        return "Program:\n" + getTabs(t + 1) + "class " + id + "{\n" + memberdecls.toString(0) + "\n" + getTabs(t + 1) + "}";
+        return ("class " + id + "\n{\n" + memberdecls.toString(t + 1) + "}\n");
     }
 }
