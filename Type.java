@@ -1,4 +1,3 @@
-abstract class Type extends ReturnType {
-
-
+class Type extends ReturnType {
+    
 }

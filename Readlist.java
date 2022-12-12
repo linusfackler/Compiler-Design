@@ -1,24 +1,31 @@
-import java.util.LinkedList;
-import java.util.List;
+class ReadList extends Token implements TI {
+	Name name;
+  ReadList readList;
+  public ReadList(Name n)
+  {
+    name = n;
+    readList = null;
+  }
 
-class Readlist extends Token {
-    private List<Name> readlist;
+  public ReadList(Name n, ReadList r)
+  {
+    name = n;
+    readList = r;
+  }
 
-    public Readlist(Name n) {
-        readlist = new LinkedList<Name>();
-        readlist.add(n);
-    }
+  public String toString(int t)
+  {
+  	return(name.toString(t) + (readList != null ? ", " + readList.toString(t) : ""));
+  }
 
-    public Readlist prepend(Name n) {
-        readlist.add(0, n);
-        return this;
-    }
-
-    public String toString(int t) {
-        String ret = "";
-        for (int i = 0; i < readlist.size() - 1; i++)
-            ret += readlist.get(i).toString(t) + ", ";
-        ret += readlist.get(readlist.size() - 1).toString(t);
-        return ret;
-    }
+  public ReturnType typeCheck() throws LanguageException {
+    ReturnType nameType = name.typeCheck();
+    if (nameType.isFinal())
+      throw new LanguageException("Error: cannot read final variables.");
+    else if (nameType.isArray())
+      throw new LanguageException("Error: cannot read non-dereferenced array.");
+    else if (nameType.isFunction())
+      throw new LanguageException("Error: cannot read functions.");
+    return nameType;
+  }
 }

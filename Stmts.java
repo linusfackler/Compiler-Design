@@ -1,23 +1,19 @@
-import java.util.List;
-import java.util.LinkedList;
+class Stmts extends Token implements TI {
+  Stmt statement;
+  Stmts statements;
+  public Stmts(Stmt s, Stmts x)
+  {
+    statement = s;
+    statements = x;
+  }
 
-class Stmts extends Token {
-    private List<Stmt> statementList;
+  public String toString(int t)
+  {
+  	return (statement.toString(t) + (statements != null ? statements.toString(t) : ""));
+  }
 
-    public Stmts() {
-        statementList = new LinkedList<Stmt>();
-    }
-
-    public Stmts prepend(Stmt s) {
-        statementList.add(0, s);
-        return this;
-    }
-
-    public String toString(int t) {
-        String ret = "";
-        for (Stmt s : statementList) {
-            ret += s.toString(t);
-        }
-        return ret;
-    }
+  public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }
+

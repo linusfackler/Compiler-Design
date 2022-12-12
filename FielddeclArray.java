@@ -1,12 +1,18 @@
-class FielddeclArray extends Fielddecl {
-    int intlit;
+class FieldDeclArray extends FieldDecl implements TI {
 
-    public FielddeclArray(TypeID t, int n) {
-        super(t);
-        intlit = n;
-    }
+	int intlit;
+	public FieldDeclArray(FieldStart f, int n)
+	{
+		super(f);
+		intlit = n;
+	}
 
-    public String toString(int t) {
-        return (getTabs(t) + super.toString(t) + "[" + intlit + "];\n");
-    }
+	public String toString(int t)
+	{
+		return( T(t) + super.toString(t) + "[" + intlit + "];\n");
+	}
+
+	public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }

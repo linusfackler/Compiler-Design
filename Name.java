@@ -1,21 +1,16 @@
-class Name extends Expr {
-    // private Name name;
-    private String id;
-    private Expr expression;
+class Name extends Expr implements TI {
+  String id;
+  public Name(String i)
+  {
+    id = i;
+  }
 
-    public Name(String n) {
-        id = n;
-        expression = null;
-    }
+  public String toString(int t)
+  {
+  	return(id);
+  }
 
-    public Name(String n, Expr e) {
-        id = n;
-        expression = e;
-    }
-
-    public String toString(int t) {
-        if (expression == null)
-            return getTabs(t) + id;
-        return getTabs(t) + id + " [ " + expression.toString(0) + " ]";
-    }
+  public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }

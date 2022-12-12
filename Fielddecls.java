@@ -1,18 +1,26 @@
-class Fielddecls extends Token {
-    private Fielddecl fd;
-    private Fielddecls fds;
+class FieldDecls extends Token implements TI {
+	FieldDecl fieldDeclaration;
+	FieldDecls fieldDeclarations;
 
-    public Fielddecls (Fielddecl f1, Fielddecls f2) {
-        fd= f1;
-        fds = f2;
-    }
+  public FieldDecls(FieldDecl f, FieldDecls s)
+  {
+  	fieldDeclaration = f;
+  	fieldDeclarations = s;
+  }
 
-    public Fielddecls(Fielddecl f1) {
-        fd = f1;
-        fds = null;
-    }
+  public FieldDecls(FieldDecl f)
+  {
+    fieldDeclaration = f;
+    fieldDeclarations = null;
+  }
 
-    public String toString(int t) {
-        return (fd.toString(t) + (fds != null ? fds.toString(t) : ""));
-    }
+  public String toString(int t)
+  {
+  	return(fieldDeclaration.toString(t) + (fieldDeclarations != null ? fieldDeclarations.toString(t) : "") );
+  }
+
+  public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }
+

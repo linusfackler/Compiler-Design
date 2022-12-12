@@ -1,8 +1,16 @@
-class OptionalFinal extends Token {
-    public OptionalFinal() {
-    }
+class OptionalFinal extends Token implements TI {
 
-    public String toString(int t) {
-        return "";
-    }
+	public OptionalFinal()
+	{
+
+	}
+
+	public String toString(int t)
+	{
+		return "";
+	}
+
+	public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }

@@ -1,18 +1,17 @@
-class Optionalexpr extends Token {
-    private Expr expression;
+class OptionalExpr extends Token implements TI {
 
-    public Optionalexpr(Expr e) {
-        expression = e;
-    }
+	Expr expression;
+	public OptionalExpr(Expr e)
+	{
+		expression = e;
+	}
 
-    public Optionalexpr() {
-        expression = null;
-    }
+	public String toString(int t)
+	{
+		return( " = " + expression.toString(t));
+	}
 
-    public String toString(int t) {
-        if (expression == null)
-            return "";
-        else
-            return " = " + expression.toString(t);
-    }    
+	public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }

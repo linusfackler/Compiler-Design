@@ -1,23 +1,31 @@
-class FielddeclSingle extends Fielddecl {
-    Boolean isFinal;
-	Optionalexpr expression;
-	public FielddeclSingle(OptionalFinal f, TypeID t, Optionalexpr e)
+class FieldDeclSingle extends FieldDecl implements TI {
+
+	Boolean isFinal;
+	OptionalExpr expression;
+	public FieldDeclSingle(OptionalFinal f, FieldStart s, OptionalExpr e)
 	{
-		super(t);
+		super(s);
 		isFinal = true;
 		expression = e;
 	}
 
-	public FielddeclSingle(TypeID t, Optionalexpr e)
+	public FieldDeclSingle(FieldStart f, OptionalExpr e)
 	{
-		super(t);
+		super(f);
 		isFinal = false;
 		expression = e;
 	}
 
 	public String toString(int t)
 	{
-		return( getTabs(t) + (isFinal ? "final " : "") + super.toString(t) + 
+		return( T(t) + (isFinal ? "final " : "") + super.toString(t) + 
 			(expression != null ? expression.toString(t) : "") + ";\n");
 	}
+
+	public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }
+
+
+

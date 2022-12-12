@@ -1,28 +1,29 @@
-import java.util.LinkedList;
-import java.util.List;
+class PrintList extends Token implements TI {
+	Expr expression;
+  PrintList printList;
+  public PrintList(Expr e)
+  {
+    expression = e;
+    printList = null;
+  }
 
-class Printlist extends Token {
-    private List<Expr> list;
+  public PrintList(Expr e, PrintList p)
+  {
+    expression = e;
+    printList = p;
+  }
 
-    public Printlist() {
-        list = new LinkedList<Expr>();
-    }
+  public String toString(int t)
+  {
+  	return(expression.toString(t) + (printList != null ? ", " + printList.toString(t) : ""));
+  }
 
-    public Printlist(Expr e) {
-        list = new LinkedList<Expr>();
-        list.add(e);
-    }
-
-    public Printlist prepend(Expr e) {
-        list.add(0, e);
-        return this;
-    }
-
-    public String toString(int t) {
-        String ret = "";
-        for (int i = 0; i < list.size() - 1; i++)
-            ret += list.get(i).toString(t) + ", ";
-        ret += list.get(list.size() - 1).toString(t);
-        return ret;
-    }
+  public ReturnType typeCheck() throws LanguageException {
+    ReturnType expressionType = expression.typeCheck();
+    if (expressionType.isArray())
+      throw new LanguageException("Error: cannot print non-dereferenced array.");
+    else if (expressionType.isVoid())
+      throw new LanguageException("Error: cannot print expressions of type void.");
+    return expressionType;
+  }
 }

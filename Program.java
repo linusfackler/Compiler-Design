@@ -1,13 +1,19 @@
-class Program extends Token {
-    private String id;
-    private Memberdecls memberdecls;
+class Program extends Token implements TI {
+	String id;
+	MemberDecls memberDeclarations;
+  public Program(String i, MemberDecls m)
+  {
+  	id = i;
+  	memberDeclarations = m;
+  }
 
-    public Program(String i, Memberdecls m) {
-        id = i;
-        memberdecls = m;
-    }
+  public String toString(int t)
+  {
+  	return("class " + id + "\n{\n" + memberDeclarations.toString(t + 1) + "}\n");
+  }
 
-    public String toString(int t) {
-        return ("class " + id + "\n{\n" + memberdecls.toString(t + 1) + "}\n");
-    }
+  public ReturnType typeCheck() throws LanguageException {
+    return memberDeclarations.typeCheck();
+  }
 }
+

@@ -1,22 +1,40 @@
-class Methoddecl extends Token {
-    private String returntype;
-    private String id;
-    private Argdecls als;
-    private Fielddecls fls;
-    private Stmts statements;
-    private String optionalSemi;
+class MethodDecl extends Token implements TI {
 
-    public Methoddecl(String rt, String i, Argdecls as, Fielddecls fs, Stmts ss, String o) {
-        returntype = rt;
-        id = i;
-        als = as;
-        fls = fs;
-        statements = ss;
-        optionalSemi = o;
-    }
+	MethodStart methodStart;
+	ArgDecls argumentDeclarations;
+	FieldDecls fieldDeclarations;
+	Stmts statements;
+	Boolean hasSemicolon;
 
-    public String toString(int t) {
-        return getTabs(t) + returntype + " " + id + "(" + als.toString(0) + ") {\n" + fls.toString(0)
-        + statements.toString(0) + "\n}" + optionalSemi;
-    }
+	public MethodDecl(MethodStart m, ArgDecls a, FieldDecls f, Stmts s, OptionalSemi o)
+	{
+		methodStart = m;
+		argumentDeclarations = a;
+		fieldDeclarations = f;
+		statements = s;
+		hasSemicolon = o != null;
+	}
+
+	public MethodDecl(MethodStart m, FieldDecls f, Stmts s, OptionalSemi o)
+	{
+		methodStart = m;
+		argumentDeclarations = null;
+		fieldDeclarations = f;
+		statements = s;
+		hasSemicolon = o != null;
+	}
+
+	public String toString(int t)
+	{
+		return( T(t) + methodStart.toString(t) + "(" + 
+			( argumentDeclarations != null ? argumentDeclarations.toString(t) : "") 
+			+ ")\n" + T(t) +"{\n" + 
+			(fieldDeclarations != null ? fieldDeclarations.toString(t + 1) : "") 
+			+ (statements != null ? statements.toString(t + 1) : "")
+			+ T(t) + "}" + (hasSemicolon ? ";\n" : "\n") );
+	}
+
+	public ReturnType typeCheck() throws LanguageException {
+		return null;
+	}
 }
